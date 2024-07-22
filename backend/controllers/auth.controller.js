@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
+import { generateTokenAndSetCookie } from "../utils/generateToken.js";
 export async function signup(req, res) {
   try {
     const { username, email, password } = req.body;
@@ -32,6 +33,8 @@ export async function signup(req, res) {
       password: hashPassword,
     });
 
+    generateTokenAndSetCookie(newUser._id, res);
+
     await newUser.save();
     res.status(201).json({
       success: true,
@@ -40,7 +43,10 @@ export async function signup(req, res) {
         password: "",
       },
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error in signup controller", error.message);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 }
 
 export async function login(req, res) {
