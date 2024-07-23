@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  getMovieByCategory,
+  getMoviesByCategory,
   getMovieDetails,
   getMovieTrailers,
   getSimilarMovies,
@@ -12,6 +12,6 @@ router.get("/trending", getTrendingMovie);
 router.get("/:id/trailers", getMovieTrailers);
 router.get("/:id/details", getMovieDetails);
 router.get("/:id/similar", getSimilarMovies);
-router.get("/:category", getMovieByCategory);
+router.get("/:category", getMoviesByCategory);
 
 export default router;
