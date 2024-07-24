@@ -17,7 +17,7 @@ const userSchema = mongoose.Schema({
   },
   image: {
     type: String,
-    default: "https://i.stack.imgur.com/l60Hf.png",
+    default: "",
   },
   searchHistory: {
     type: Array,

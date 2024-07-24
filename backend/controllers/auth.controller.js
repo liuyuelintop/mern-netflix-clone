@@ -25,12 +25,17 @@ export async function signup(req, res) {
       return res.status(400).json({ message: "Username already exists" });
     }
     const salt = await bcryptjs.genSalt(10);
-    const hashPassword = await bcryptjs.hash(password, salt);
+    const hashedPassword = await bcryptjs.hash(password, salt);
+
+    const PROFILE_PICS = ["/avatar1.png", "/avatar2.png", "/avatar3.png"];
+
+    const image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];
 
     const newUser = new User({
-      username,
       email,
-      password: hashPassword,
+      password: hashedPassword,
+      username,
+      image,
     });
 
     generateTokenAndSetCookie(newUser._id, res);
