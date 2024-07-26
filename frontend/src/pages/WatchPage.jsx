@@ -24,7 +24,6 @@ const WatchPage = () => {
         const getTrailers = async () => {
             try {
                 const res = await axios.get(`/api/v1/${contentType}/${id}/trailers`);
-                console.log("getTrailers res: ", res);
                 setTrailers(res.data.trailers);
             } catch (error) {
                 if (error.message.includes("404")) {
@@ -68,7 +67,6 @@ const WatchPage = () => {
         getContentDetails();
     }, [contentType, id]);
 
-    console.log(trailers);
     const handleNext = () => {
         if (currentTrailerIdx < trailers.length - 1) setCurrentTrailerIdx(currentTrailerIdx + 1);
     };

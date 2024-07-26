@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js";
 import { fetchFromTMDB } from "../services/tmdb.service.js";
 
+//TODO: Check if ID exists already ? Don't add it if it has already been created
 export async function searchPerson(req, res) {
   const { query } = req.params;
   try {
