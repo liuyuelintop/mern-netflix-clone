@@ -3,16 +3,15 @@ import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authUser";
 
 const SignUpPage = () => {
-
     const { searchParams } = new URL(document.location);
     const emailValue = searchParams.get("email");
 
     const [email, setEmail] = useState(emailValue || "");
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const { signup } = useAuthStore();
+    const { signup, isSigningUp } = useAuthStore();
+
     const handleSignUp = (e) => {
         e.preventDefault();
         signup({ email, username, password });
@@ -52,7 +51,7 @@ const SignUpPage = () => {
                             <input
                                 type='text'
                                 className='w-full px-3 py-2 mt-1 border border-gray-700 rounded-md bg-transparent text-white focus:outline-none focus:ring'
-                                placeholder='username'
+                                placeholder='johndoe'
                                 id='username'
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
@@ -77,8 +76,9 @@ const SignUpPage = () => {
                             className='w-full py-2 bg-red-600 text-white font-semibold rounded-md
 							hover:bg-red-700
 						'
+                            disabled={isSigningUp}
                         >
-                            Sign Up
+                            {isSigningUp ? "Loading..." : "Sign Up"}
                         </button>
                     </form>
                     <div className='text-center text-gray-400'>
