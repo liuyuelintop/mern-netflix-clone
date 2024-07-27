@@ -1,7 +1,6 @@
 import { User } from "../models/user.model.js";
 import { fetchFromTMDB } from "../services/tmdb.service.js";
 
-//TODO: Check if ID exists already ? Don't add it if it has already been created
 export async function searchPerson(req, res) {
   const { query } = req.params;
   try {
@@ -13,17 +12,14 @@ export async function searchPerson(req, res) {
       return res.status(404).send(null);
     }
 
-    await User.findByIdAndUpdate(req.user._id, {
-      $push: {
-        searchHistory: {
-          id: response.results[0].id,
-          image: response.results[0].profile_path,
-          title: response.results[0].name,
-          searchType: "person",
-          createdAt: new Date(),
-        },
-      },
-    });
+    const searchItem = {
+      id: response.results[0].id,
+      image: response.results[0].profile_path,
+      title: response.results[0].name,
+      searchType: "person",
+    };
+
+    updateItemToSearchHistory(req.user._id, searchItem);
 
     res.status(200).json({ success: true, content: response.results });
   } catch (error) {
@@ -44,17 +40,15 @@ export async function searchMovie(req, res) {
       return res.status(404).send(null);
     }
 
-    await User.findByIdAndUpdate(req.user._id, {
-      $push: {
-        searchHistory: {
-          id: response.results[0].id,
-          image: response.results[0].poster_path,
-          title: response.results[0].title,
-          searchType: "movie",
-          createdAt: new Date(),
-        },
-      },
-    });
+    const searchItem = {
+      id: response.results[0].id,
+      image: response.results[0].poster_path,
+      title: response.results[0].title,
+      searchType: "movie",
+      createdAt: new Date(),
+    };
+    updateItemToSearchHistory(req.user._id, searchItem);
+
     res.status(200).json({ success: true, content: response.results });
   } catch (error) {
     console.error("Error in searchMovie controller: ", error.message);
@@ -74,17 +68,15 @@ export async function searchTv(req, res) {
       return res.status(404).send(null);
     }
 
-    await User.findByIdAndUpdate(req.user._id, {
-      $push: {
-        searchHistory: {
-          id: response.results[0].id,
-          image: response.results[0].poster_path,
-          title: response.results[0].name,
-          searchType: "tv",
-          createdAt: new Date(),
-        },
-      },
-    });
+    const searchItem = {
+      id: response.results[0].id,
+      image: response.results[0].poster_path,
+      title: response.results[0].name,
+      searchType: "tv",
+      createdAt: new Date(),
+    };
+    updateItemToSearchHistory(req.user._id, searchItem);
+
     res.status(200).json({ success: true, content: response.results });
   } catch (error) {
     console.error("Error in searchTv controller: ", error.message);
@@ -130,3 +122,23 @@ export async function removeItemFromSearchHistory(req, res) {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 }
+
+const updateItemToSearchHistory = async (userId, searchItem) => {
+  const user = await User.findById(userId);
+  const existingSearch = user.searchHistory.find(
+    (history) => history.id === searchItem.id
+  );
+
+  if (existingSearch) {
+    // 更新已有记录的 createdAt 时间
+    existingSearch.createdAt = new Date();
+  } else {
+    // 添加新记录
+    user.searchHistory.push({
+      ...searchItem,
+      createdAt: new Date(),
+    });
+  }
+
+  await user.save();
+};
