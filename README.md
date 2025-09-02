@@ -303,10 +303,6 @@ htop
 
 This project is licensed under the ISC License.
 
-## 🔗 Demo
-
-[Live Demo](https://mern-netflix-clone-mj1d.onrender.com/)
-
 ## 🚀 Deployment Guide
 
 **📋 [Complete Deployment Guide](./DEPLOYMENT.md)**
